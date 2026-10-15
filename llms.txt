@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Hooks Lifecycle: Every Event, Explained](https://en.aobaworks.com/claude-code-hooks-lifecycle-every-event-explained/): Claude Code hooks lifecycle explained: when each hook event fires in an automation run, and which ones stop runaway token use or silent failures.
 - [Claude Code Cron Job Setup: Run Automations Overnight](https://en.aobaworks.com/claude-code-cron-job-setup-run-automations-overnight/): Claude Code cron job setup: auth tokens, PATH, working directory, permissions, locks and log rotation, so overnight claude -p runs don't fail silently.
-- ["Claude Code Checkpoints: How Rollback Works in Automations"](https://en.aobaworks.com/claude-code-checkpoints-how-rollback-works-in-automations/): "How Claude Code checkpoints work in headless jobs: enable SDK file checkpointing, save UUIDs, rewind unattended runs, and learn what rewind can't undo."
+- [Claude Code Checkpoints: How Rollback Works in Automations](https://en.aobaworks.com/claude-code-checkpoints-how-rollback-works-in-automations/): How Claude Code checkpoints work in headless jobs: enable SDK file checkpointing, save UUIDs, rewind unattended runs, and learn what rewind can't undo.
 - [Why Claude Code Stops Mid-Automation (and How to Fix It)](https://en.aobaworks.com/why-claude-code-stops-mid-automation-and-how-to-fix-it/): Why does Claude Code stop running headless automations? Map the turn, budget, timeout and permission triggers in claude -p runs, plus a fix checklist.
