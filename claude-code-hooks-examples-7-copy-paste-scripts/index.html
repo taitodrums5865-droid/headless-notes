@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Code Hooks Examples: 7 Copy-Paste Scripts</title><meta name="description" content="Claude Code hooks examples you can copy: 7 working scripts for guardrails, Stop-hook stall prevention, and usage logging, with settings.json and fixes."><link rel="canonical" href="https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/">
+<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#13171b" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article"><meta property="og:title" content="Claude Code Hooks Examples: 7 Copy-Paste Scripts"><meta property="og:description" content="Claude Code hooks examples you can copy: 7 working scripts for guardrails, Stop-hook stall prevention, and usage logging, with settings.json and fixes.">
+<meta property="og:url" content="https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/"><meta property="og:site_name" content="Headless Notes"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://en.aobaworks.com/og/claude-code-hooks-examples-7-copy-paste-scripts.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Claude Code Hooks Examples: 7 Copy-Paste Scripts"><meta name="twitter:card" content="summary_large_image"><meta property="article:published_time" content="2026-10-17"><meta property="article:modified_time" content="2026-10-17"><meta property="article:tag" content="Claude Code"><meta property="article:tag" content="Hooks"><meta property="article:tag" content="Automation"><meta property="article:tag" content="Guardrails"><meta property="article:tag" content="Logging"><meta property="article:tag" content="AI Agents">
+<link rel="alternate" type="application/rss+xml" title="Headless Notes" href="/feed.xml"><link rel="stylesheet" href="/style.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Claude Code Hooks Examples: 7 Copy-Paste Scripts", "url": "https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/", "image": ["https://en.aobaworks.com/og/claude-code-hooks-examples-7-copy-paste-scripts.png"], "description": "Claude Code hooks examples you can copy: 7 working scripts for guardrails, Stop-hook stall prevention, and usage logging, with settings.json and fixes.", "datePublished": "2026-10-17", "dateModified": "2026-10-17", "mainEntityOfPage": "https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/", "inLanguage": "en", "keywords": "Claude Code, Hooks, Automation, Guardrails, Logging, AI Agents", "wordCount": 2232, "author": {"@type": "Organization", "name": "Headless Notes", "url": "https://en.aobaworks.com/about/"}, "publisher": {"@type": "Organization", "name": "Headless Notes", "url": "https://en.aobaworks.com/"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://en.aobaworks.com/"}, {"@type": "ListItem", "position": 2, "name": "Claude Code", "item": "https://en.aobaworks.com/tag/claude-code/"}, {"@type": "ListItem", "position": 3, "name": "Claude Code Hooks Examples: 7 Copy-Paste Scripts", "item": "https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do I put Claude Code hooks?", "acceptedAnswer": {"@type": "Answer", "text": "<p>Put them in <code>.claude/settings.json<\/code> for a project you share, <code>.claude/settings.local.json<\/code> for personal project hooks, or <code>~/.claude/settings.json<\/code> for all your projects. The scripts themselves can live anywhere, but <code>.claude/hooks/<\/code> plus <code>${CLAUDE_PROJECT_DIR}<\/code> keeps paths reliable (<a href=\"https://code.claude.com/docs/en/hooks\" rel=\"noopener\">Hooks reference<\/a>).<\/p>"}}, {"@type": "Question", "name": "How do I block a command with a hook?", "acceptedAnswer": {"@type": "Answer", "text": "<p>Use a <code>PreToolUse<\/code> hook that either prints JSON with <code>permissionDecision: \"deny\"<\/code> or exits with code 2 and a reason on stderr. Both stop the tool call, and Claude sees the reason (<a href=\"https://code.claude.com/docs/en/hooks\" rel=\"noopener\">Hooks reference<\/a>).<\/p>"}}, {"@type": "Question", "name": "Why does my Stop hook make Claude loop forever?", "acceptedAnswer": {"@type": "Answer", "text": "<p>The hook blocks every stop, even after Claude has already been forced to continue. Read <code>stop_hook_active<\/code> from stdin and exit 0 when it's <code>true<\/code> (<a href=\"https://www.cubic.dev/blog/claude-code-hooks\" rel=\"noopener\">cubic<\/a>).<\/p>"}}, {"@type": "Question", "name": "Do hooks slow Claude Code down?", "acceptedAnswer": {"@type": "Answer", "text": "<p>Synchronous hooks run inline, and command hooks can run for up to 600 seconds by default. Keep checks fast, set a lower <code>timeout<\/code>, and mark logging hooks <code>\"async\": true<\/code> (<a href=\"https://code.claude.com/docs/en/hooks\" rel=\"noopener\">Hooks reference<\/a>).<\/p>"}}]}</script>
+</head><body><a class="skip" href="#content">Skip to content</a>
+<header class="site-head"><div class="wrap"><a class="brand" href="/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#17695a"/><rect x="17" y="15" width="9" height="34" rx="2" fill="#fff"/><rect x="38" y="15" width="9" height="34" rx="2" fill="#fff"/><rect x="17" y="28" width="30" height="8" rx="2" fill="#fff"/></svg>Headless Notes</a><nav class="site-nav" aria-label="Site"><a href="/">Guides</a><a href="/#topics">Topics</a><a href="/about/">About</a></nav></div></header>
+<main id="content" class="wrap"><nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/tag/claude-code/">Claude Code</a></nav><article><h1>Claude Code Hooks Examples: 7 Copy-Paste Scripts</h1><p class="meta">By <a href="/about/">Headless Notes</a> · Published <time datetime="2026-10-17">October 17, 2026</time> · 10 min read</p><ul class="pills" aria-label="Topics"><li><a href="/tag/claude-code/">Claude Code</a></li><li><a href="/tag/hooks/">Hooks</a></li><li><a href="/tag/automation/">Automation</a></li><li><a href="/tag/ai-agents/">AI Agents</a></li></ul><p>Claude Code hooks are shell commands that run at fixed points in a session. Common ones run before a tool call (<code>PreToolUse</code>), after one (<code>PostToolUse</code>), when Claude tries to finish (<code>Stop</code>) and when a session ends (<code>SessionEnd</code>). This guide has seven copy-paste scripts: two guardrails that block dangerous commands and protected files, three stall-prevention hooks (test gate, "waiting for you" alerts, context at startup) and two logging hooks that record every tool call and session. Each script is a small bash file in <code>.claude/hooks/</code>, wired up in <code>.claude/settings.json</code> (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<aside class="ui-sum" aria-label="Key points"><p class="ui-sum-h">Key points</p><ul><li>PreToolUse can deny a command with permissionDecision &quot;deny&quot;</li><li>Check stop_hook_active in Stop hooks to avoid endless loops</li><li>Command hooks time out after 600 seconds by default</li></ul><p class="ui-sum-who"><b>Best for: </b>Solo builders automating recurring work with Claude Code</p></aside><nav class="toc" aria-label="Table of contents"><p class="toc-h">In this guide</p><ol><li><a href="#which-option-is-right-for-you">Which option is right for you?</a></li><li><a href="#how-hooks-are-wired-the-60-second-version">How hooks are wired: the 60-second version</a></li><li><a href="#guardrail-scripts-1-2-stop-damage-before-it-happens">Guardrail scripts (1–2): stop damage before it happens</a></li><li><a href="#stall-prevention-scripts-3-5-keep-unattended-runs-moving">Stall-prevention scripts (3–5): keep unattended runs moving</a></li><li><a href="#usage-logging-scripts-6-7-know-what-the-agent-actually-did">Usage-logging scripts (6–7): know what the agent actually did</a></li><li><a href="#common-mistakes-and-fixes">Common mistakes and fixes</a></li><li><a href="#next-steps">Next steps</a></li><li><a href="#faq">FAQ</a></li><li><a href="#sources">Sources</a></li></ol></nav><h2 id="which-option-is-right-for-you">Which option is right for you?</h2>
+<p>Start with the one hook that fixes the problem you have today, then add others as you need them.</p>
+<div class="table-wrap"><table><thead><tr><th>Your situation</th><th>What to pick first</th><th>First page to open</th></tr></thead><tbody><tr><td>Beginner, first hook ever</td><td>Script 4 (notification when Claude is waiting). It changes nothing and is easy to check</td><td><a href="https://code.claude.com/docs/en/hooks-guide" rel="noopener">Hooks guide</a></td></tr><tr><td>Daily work, Claude runs commands unattended</td><td>Scripts 1 + 2 (guardrails)</td><td><a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference: PreToolUse</a></td></tr><tr><td>Overnight or cron runs that stop early</td><td>Script 3 (Stop test gate) + Script 5 (tool log)</td><td>/claude-code-cron-job-setup-run-automations-overnight/</td></tr><tr><td>Watching your budget or usage</td><td>Scripts 5 + 6 (logging)</td><td>/claude-code-how-to-see-token-usage-and-reduce-it/</td></tr></tbody></table></div>
+<p>Why these picks:</p>
+<ul><li><strong>Beginner:</strong> a notification hook can't block anything, so if it's wrong, nothing breaks.</li><li><strong>Daily use:</strong> guardrails are deterministic. They always run, so you don't depend on the model remembering a rule (<a href="https://code.claude.com/docs/en/hooks-guide" rel="noopener">Hooks guide</a>).</li><li><strong>Budget:</strong> logs show you what the agent actually did before you change plans or prompts.</li></ul>
+<p>If you haven't read about the events yet, start with /claude-code-hooks-lifecycle-every-event-explained/.</p>
+<h2 id="how-hooks-are-wired-the-60-second-version">How hooks are wired: the 60-second version</h2>
+<p>Every hook is a JSON entry under an event name in a settings file. Claude Code sends event data to the script on stdin, and the script's exit code or JSON output controls what happens next (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<p>Key facts from the official reference:</p>
+<ul><li><strong>Where:</strong> <code>~/.claude/settings.json</code> (all your projects), <code>.claude/settings.json</code> (project, can be committed) or <code>.claude/settings.local.json</code> (project, gitignored).</li><li><strong>Input on stdin:</strong> <code>session_id</code>, <code>transcript_path</code>, <code>cwd</code>, <code>permission_mode</code>, <code>hook_event_name</code>, plus event fields like <code>tool_name</code> and <code>tool_input</code>.</li><li><strong>Exit codes:</strong> <code>0</code> = success, and any JSON output is applied. <code>2</code> = blocking error on events that support blocking. Any other code = non-blocking error, and the action still goes ahead.</li><li><strong>Timeout:</strong> 600 seconds by default for command hooks. You can change it with <code>"timeout"</code>.</li><li><strong>Matcher:</strong> <code>"Bash"</code>, <code>"Edit|Write"</code>, or a regex. Leave it empty or use <code>"*"</code> to match everything.</li><li><strong>Paths:</strong> use <code>${CLAUDE_PROJECT_DIR}</code> so scripts work from any working directory.</li></ul>
+<p>All scripts below need <a href="https://jqlang.org/" rel="noopener"><code>jq</code></a> to parse the JSON on stdin.</p>
+<h3 id="setup-steps-do-this-once">Setup steps (do this once)</h3>
+<ol><li>In your project root, run <code>mkdir -p .claude/hooks .claude/logs</code>.</li><li>Save each script below into <code>.claude/hooks/</code> and make it executable: <code>chmod +x .claude/hooks/*.sh</code>.</li><li>Add the matching JSON block to <code>.claude/settings.json</code> under the top-level <code>"hooks"</code> key. If you use several hooks, merge them into one <code>"hooks"</code> object.</li><li>In Claude Code, type <strong><code>/hooks</code></strong>. The menu is a read-only browser that shows each hook, its event and which file it came from (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</li><li>Trigger the event on purpose (for example, ask Claude to run <code>rm -rf /tmp/x</code>) and check that the hook fires.</li></ol>
+<h2 id="guardrail-scripts-1-2-stop-damage-before-it-happens">Guardrail scripts (1–2): stop damage before it happens</h2>
+<p>Guardrails use <code>PreToolUse</code>, which runs before a tool call and can allow, deny, ask or defer it (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h3 id="script-1-block-destructive-shell-commands">Script 1: Block destructive shell commands</h3>
+<p><code>.claude/hooks/block-dangerous.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example guardrail: deny risky Bash commands before they run.
+INPUT=$(cat)
+CMD=$(echo &quot;$INPUT&quot; | jq -r &#x27;.tool_input.command // empty&#x27;)
+
+if echo &quot;$CMD&quot; | grep -Eq &#x27;rm -rf|git push --force|git reset --hard|DROP TABLE&#x27;; then
+  jq -n --arg c &quot;$CMD&quot; &#x27;{
+    hookSpecificOutput: {
+      hookEventName: &quot;PreToolUse&quot;,
+      permissionDecision: &quot;deny&quot;,
+      permissionDecisionReason: (&quot;Blocked by guardrail hook: &quot; + $c)
+    }
+  }&#x27;
+fi
+exit 0</code></pre>
+<pre data-lang="json"><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      { &quot;matcher&quot;: &quot;Bash&quot;,
+        &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/block-dangerous.sh&quot; }] }
+    ]
+  }
+}</code></pre>
+<p>The <code>permissionDecision: "deny"</code> output is the documented way to block a call. If the script prints nothing and exits 0, the normal permission flow applies (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). <strong>Limitation:</strong> pattern matching is easy to get around (for example, <code>rm -r -f</code>). Treat it as a seatbelt, not a sandbox, and keep your normal <a href="https://code.claude.com/docs/en/permissions" rel="noopener">permission rules</a> too.</p>
+<h3 id="script-2-protect-secrets-and-lock-files">Script 2: Protect secrets and lock files</h3>
+<p><code>.claude/hooks/protect-files.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example: refuse edits to sensitive paths. Exit 2 = block; stderr is the reason.
+FILE=$(jq -r &#x27;.tool_input.file_path // empty&#x27;)
+for p in &quot;.env&quot; &quot;package-lock.json&quot; &quot;.git/&quot; &quot;secrets/&quot;; do
+  if [[ &quot;$FILE&quot; == *&quot;$p&quot;* ]]; then
+    echo &quot;Edits to $FILE are blocked (protected path: $p).&quot; &gt;&amp;2
+    exit 2
+  fi
+done
+exit 0</code></pre>
+<p>Matcher: <code>"Edit|Write"</code>. On <code>PreToolUse</code>, exit code 2 blocks the call, and your stderr message goes to Claude as the reason, so it can change course instead of retrying blindly (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h2 id="stall-prevention-scripts-3-5-keep-unattended-runs-moving">Stall-prevention scripts (3–5): keep unattended runs moving</h2>
+<p>These hooks handle the three usual stalls: Claude declaring "done" too early, Claude sitting at a prompt while you're away, and Claude starting without context. For the wider set of causes, see /why-claude-code-stops-mid-automation-and-how-to-fix-it/.</p>
+<h3 id="script-3-don-t-let-claude-stop-while-tests-fail">Script 3: Don't let Claude stop while tests fail</h3>
+<p><code>.claude/hooks/stop-gate.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example Stop gate: block &quot;done&quot; once if tests fail.
+INPUT=$(cat)
+# Loop guard: if we already forced a continuation, let Claude stop.
+if [ &quot;$(echo &quot;$INPUT&quot; | jq -r &#x27;.stop_hook_active // false&#x27;)&quot; = &quot;true&quot; ]; then
+  exit 0
+fi
+cd &quot;$CLAUDE_PROJECT_DIR&quot; || exit 0
+if ! npm test --silent &gt; .claude/logs/last-test.log 2&gt;&amp;1; then
+  jq -n &#x27;{decision: &quot;block&quot;,
+          reason: &quot;Tests are failing. Read .claude/logs/last-test.log, fix the failures, then finish.&quot;}&#x27;
+fi
+exit 0</code></pre>
+<pre data-lang="json"><code class="language-json">&quot;Stop&quot;: [
+  { &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/stop-gate.sh&quot;, &quot;timeout&quot;: 300 }] }
+]</code></pre>
+<p>On <code>Stop</code>, <code>decision: "block"</code> with a <code>reason</code> keeps Claude working, and the reason becomes its next instruction (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). The <code>stop_hook_active</code> field is <code>true</code> when Claude is already continuing because of a Stop hook. Check it, or you can create a loop that never ends (<a href="https://www.cubic.dev/blog/claude-code-hooks" rel="noopener">cubic</a>, <a href="https://claudefa.st/blog/tools/hooks/stop-hook-task-enforcement" rel="noopener">claudefa.st</a>). One third-party write-up says Claude Code ends the turn itself after eight blocks in a row (<a href="https://www.cubic.dev/blog/claude-code-hooks" rel="noopener">cubic</a>). Don't rely on that. <strong>Not for:</strong> projects whose test suite takes longer than your timeout. Swap in a faster check such as lint or type-check.</p>
+<h3 id="script-4-get-pinged-when-claude-is-waiting-for-you">Script 4: Get pinged when Claude is waiting for you</h3>
+<p><code>.claude/hooks/notify.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example: log + desktop alert when Claude needs input.
+INPUT=$(cat)
+MSG=$(echo &quot;$INPUT&quot; | jq -r &#x27;.message // &quot;Claude Code needs your input&quot;&#x27;)
+echo &quot;$(date -u +%FT%TZ) $MSG&quot; &gt;&gt; &quot;$CLAUDE_PROJECT_DIR/.claude/logs/waiting.log&quot;
+if command -v osascript &gt;/dev/null; then
+  osascript -e &quot;display notification \&quot;$MSG\&quot; with title \&quot;Claude Code\&quot;&quot;
+elif command -v notify-send &gt;/dev/null; then
+  notify-send &quot;Claude Code&quot; &quot;$MSG&quot;
+fi
+exit 0</code></pre>
+<p>Put it under the <code>Notification</code> event with matcher <code>"permission_prompt|idle_prompt"</code>. Both are documented notification types (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). On a headless server the desktop alert does nothing, but <code>waiting.log</code> still shows you where an overnight run got stuck.</p>
+<h3 id="script-5-bonus-context-brief-claude-at-session-start">Script 5 (bonus context): Brief Claude at session start</h3>
+<p><code>.claude/hooks/session-context.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example: give Claude the current repo state at startup.
+cd &quot;$CLAUDE_PROJECT_DIR&quot; || exit 0
+echo &quot;Branch: $(git branch --show-current)&quot;
+echo &quot;Uncommitted files:&quot;; git status --short | head -20
+[ -f TODO.md ] &amp;&amp; { echo &quot;Open TODOs:&quot;; head -20 TODO.md; }
+exit 0</code></pre>
+<p>On <code>SessionStart</code>, plain stdout is added to Claude's context. That's different from most events, where it goes to the debug log (<a href="https://www.cubic.dev/blog/claude-code-hooks" rel="noopener">cubic</a>). Keep it short: stdout fields are capped at 10,000 characters, and anything longer is saved to a file with only a preview shown (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h2 id="usage-logging-scripts-6-7-know-what-the-agent-actually-did">Usage-logging scripts (6–7): know what the agent actually did</h2>
+<p>Logging hooks add one JSON line per event to a file, so you can review a run afterwards without reading the whole transcript.</p>
+<h3 id="script-6-log-every-tool-call">Script 6: Log every tool call</h3>
+<p><code>.claude/hooks/log-tools.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example: one JSON line per tool call.
+jq -c &#x27;{ts: (now|todate), session: .session_id, tool: .tool_name,
+        target: (.tool_input.command // .tool_input.file_path // .tool_input.url // null)}&#x27; \
+  &gt;&gt; &quot;$CLAUDE_PROJECT_DIR/.claude/logs/tools.jsonl&quot;
+exit 0</code></pre>
+<pre data-lang="json"><code class="language-json">&quot;PostToolUse&quot;: [
+  { &quot;matcher&quot;: &quot;*&quot;,
+    &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;${CLAUDE_PROJECT_DIR}/.claude/hooks/log-tools.sh&quot;, &quot;async&quot;: true }] }
+]</code></pre>
+<p><code>"async": true</code> is a documented handler option (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). Use it so logging doesn't slow each tool call down.</p>
+<h3 id="script-7-session-summary-on-exit">Script 7: Session summary on exit</h3>
+<p><code>.claude/hooks/session-summary.sh</code>:</p>
+<pre data-lang="bash"><code class="language-bash">#!/usr/bin/env bash
+# Example: summarize a session when it ends.
+INPUT=$(cat)
+SID=$(echo &quot;$INPUT&quot; | jq -r &#x27;.session_id&#x27;)
+REASON=$(echo &quot;$INPUT&quot; | jq -r &#x27;.reason // &quot;unknown&quot;&#x27;)
+LOG=&quot;$CLAUDE_PROJECT_DIR/.claude/logs/tools.jsonl&quot;
+COUNT=$(grep -c &quot;\&quot;$SID\&quot;&quot; &quot;$LOG&quot; 2&gt;/dev/null || echo 0)
+TOP=$(grep &quot;\&quot;$SID\&quot;&quot; &quot;$LOG&quot; 2&gt;/dev/null | jq -r &#x27;.tool&#x27; | sort | uniq -c | sort -rn | head -3 | tr &#x27;\n&#x27; &#x27; &#x27;)
+echo &quot;$(date -u +%FT%TZ) session=$SID reason=$REASON tool_calls=$COUNT top=[$TOP] transcript=$(echo &quot;$INPUT&quot; | jq -r &#x27;.transcript_path&#x27;)&quot; \
+  &gt;&gt; &quot;$CLAUDE_PROJECT_DIR/.claude/logs/sessions.log&quot;
+exit 0</code></pre>
+<p>Register it under <code>SessionEnd</code>. Documented end reasons include <code>clear</code>, <code>logout</code>, <code>prompt_input_exit</code> and <code>other</code> (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). <strong>Limitation:</strong> this counts tool calls, not tokens or cost. For token numbers, use the tools in /claude-code-how-to-see-token-usage-and-reduce-it/.</p>
+<h2 id="common-mistakes-and-fixes">Common mistakes and fixes</h2>
+<p>Most broken hooks come down to one of five problems:</p>
+<div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead><tbody><tr><td>Hook never fires</td><td>Wrong event name or matcher (names are case-sensitive, e.g. <code>Bash</code>, `Edit\</td><td>Write`)</td><td>Open <code>/hooks</code> and confirm the event, matcher and source file</td></tr><tr><td>"hook error" notice</td><td>Script isn't executable or <code>jq</code> is missing</td><td>Run <code>chmod +x</code>, install <code>jq</code>, and test with `echo '{}' \</td><td>./script.sh`</td></tr><tr><td>JSON output ignored</td><td>Exited with a code other than 0, or extra text was printed before the JSON</td><td>Print only the JSON, then <code>exit 0</code></td></tr><tr><td>Claude never finishes</td><td>Stop hook ignores <code>stop_hook_active</code></td><td>Add the loop guard from Script 3</td></tr><tr><td>Works in one folder, not another</td><td>Relative paths</td><td>Use <code>${CLAUDE_PROJECT_DIR}</code></td></tr></tbody></table></div>
+<p>For anything else, turn on debug logging. It shows hook runs, full stderr and JSON parse failures (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>, <a href="https://code.claude.com/docs/en/debug-logs" rel="noopener">debug logs</a>). If a hook goes wrong and Claude edits files it shouldn't, /claude-code-checkpoints-how-rollback-works-in-automations/ explains how to roll back.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>The fastest win is one guardrail and one log today, then a test gate once both are working.</p>
+<p><strong>Today, on your own:</strong></p>
+<ol><li>Add Script 1 and Script 6 to one project, then use <code>/hooks</code> to check both are registered.</li><li>Run a normal task and read <code>.claude/logs/tools.jsonl</code> afterwards.</li><li>When it looks right, add Script 3 with your fastest test command.</li></ol>
+<p><strong>If you'd rather not build this yourself:</strong></p>
+<ul><li><strong>Claude Academy's "Claude Code in Action"</strong>: a free course of about one hour and 9 lessons, including using hooks to enforce rules (<a href="https://anthropic.skilljar.com/claude-code-in-action" rel="noopener">Skilljar</a>, <a href="https://www.classcentral.com/course/anthropic-academy-claude-code-in-action-536160" rel="noopener">Class Central</a>). Good if you want structured basics. It isn't for you if you need help with your specific setup, because it's general training.</li><li><strong>Claude Team plan</strong>: $25/seat/month, or $20 billed annually (as of October 2026; check the <a href="https://claude.com/pricing" rel="noopener">official page</a>). Useful if a small team wants shared project settings, and admins can restrict hooks with managed settings such as <code>allowManagedHooksOnly</code> (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>). Not worth it for a solo builder: Pro ($20/month, or $17 billed annually, as of October 2026; see <a href="https://claude.com/pricing" rel="noopener">Claude pricing</a>) already includes Claude Code. <strong>Limitation:</strong> no plan writes your hooks for you.</li></ul>
+<p><strong>Related guides on this site:</strong></p>
+<ul><li>/claude-code-hooks-lifecycle-every-event-explained/</li><li>/why-claude-code-stops-mid-automation-and-how-to-fix-it/</li><li>/claude-code-cron-job-setup-run-automations-overnight/</li></ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="where-do-i-put-claude-code-hooks">Where do I put Claude Code hooks?</h3>
+<p>Put them in <code>.claude/settings.json</code> for a project you share, <code>.claude/settings.local.json</code> for personal project hooks, or <code>~/.claude/settings.json</code> for all your projects. The scripts themselves can live anywhere, but <code>.claude/hooks/</code> plus <code>${CLAUDE_PROJECT_DIR}</code> keeps paths reliable (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h3 id="how-do-i-block-a-command-with-a-hook">How do I block a command with a hook?</h3>
+<p>Use a <code>PreToolUse</code> hook that either prints JSON with <code>permissionDecision: "deny"</code> or exits with code 2 and a reason on stderr. Both stop the tool call, and Claude sees the reason (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h3 id="why-does-my-stop-hook-make-claude-loop-forever">Why does my Stop hook make Claude loop forever?</h3>
+<p>The hook blocks every stop, even after Claude has already been forced to continue. Read <code>stop_hook_active</code> from stdin and exit 0 when it's <code>true</code> (<a href="https://www.cubic.dev/blog/claude-code-hooks" rel="noopener">cubic</a>).</p>
+<h3 id="do-hooks-slow-claude-code-down">Do hooks slow Claude Code down?</h3>
+<p>Synchronous hooks run inline, and command hooks can run for up to 600 seconds by default. Keep checks fast, set a lower <code>timeout</code>, and mark logging hooks <code>"async": true</code> (<a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference</a>).</p>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://code.claude.com/docs/en/hooks" rel="noopener">Hooks reference – Claude Code Docs</a></li><li><a href="https://code.claude.com/docs/en/hooks-guide" rel="noopener">Automate actions with hooks (Hooks guide) – Claude Code Docs</a></li><li><a href="https://code.claude.com/docs/en/permissions" rel="noopener">Permissions – Claude Code Docs</a></li><li><a href="https://code.claude.com/docs/en/debug-logs" rel="noopener">Debug logs – Claude Code Docs</a></li><li><a href="https://www.cubic.dev/blog/claude-code-hooks" rel="noopener">Claude Code hooks: every event, with examples – cubic</a></li><li><a href="https://claudefa.st/blog/tools/hooks/stop-hook-task-enforcement" rel="noopener">Claude Code Stop Hook: Force Task Completion – claudefa.st</a></li><li><a href="https://claude.com/pricing" rel="noopener">Claude pricing</a></li><li><a href="https://anthropic.skilljar.com/claude-code-in-action" rel="noopener">Claude Code in Action – Anthropic Courses</a></li><li><a href="https://www.classcentral.com/course/anthropic-academy-claude-code-in-action-536160" rel="noopener">Claude Code in Action – Class Central</a></li><li><a href="https://jqlang.org/" rel="noopener">jq</a></li></ul><p class="note">Spotted something out of date or wrong? Tell us at <a href="mailto:shigoto.ai.note@gmail.com">shigoto.ai.note@gmail.com</a>. We check every guide against its official sources.</p></article><section class="related"><h2>Keep reading</h2><ul class="list"><li><p class="when"><time datetime="2026-10-16">October 16, 2026</time> · 9 min read</p><h3><a href="/claude-code-hooks-lifecycle-every-event-explained/">Claude Code Hooks Lifecycle: Every Event, Explained</a></h3><p>Claude Code hooks lifecycle explained: when each hook event fires in an automation run, and which ones stop runaway token use or silent failures.</p></li><li><p class="when"><time datetime="2026-10-17">October 17, 2026</time> · 10 min read</p><h3><a href="/claude-code-how-to-see-token-usage-and-reduce-it/">Claude Code: How to See Token Usage (and Reduce It)</a></h3><p>Claude Code how to see token usage: run /usage in a session, read total_cost_usd from headless JSON runs, check the Console Usage page, and set cost alerts.</p></li><li><p class="when"><time datetime="2026-10-13">October 13, 2026</time> · 9 min read</p><h3><a href="/why-claude-code-stops-mid-automation-and-how-to-fix-it/">Why Claude Code Stops Mid-Automation (and How to Fix It)</a></h3><p>Why does Claude Code stop running headless automations? Map the turn, budget, timeout and permission triggers in claude -p runs, plus a fix checklist.</p></li></ul></section></main>
+<footer class="site-foot"><div class="wrap"><p><strong>Headless Notes</strong> — Practical guides to running AI automations that keep working while you sleep.</p>
+<p><a href="/">All guides</a> · <a href="/about/">About &amp; editorial policy</a> · <a href="/privacy/">Privacy</a> · <a href="/feed.xml">RSS</a></p><p class="sisters">Sister sites: <a href="https://aobaworks.com/grant-radar/">Grant Radar</a></p><p>© 2026 Headless Notes</p></div></footer><script src="/ui.js" defer></script></body></html>
