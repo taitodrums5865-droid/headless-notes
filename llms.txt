@@ -1,4 +1,4 @@
-# Headless Notes
+# Unattended
 
 > Practical guides to running AI automations that keep working while you sleep.
 
