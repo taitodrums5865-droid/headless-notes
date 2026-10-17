@@ -1,6 +1,6 @@
 # Unattended
 
-> Practical guides to running AI automations that keep working while you sleep.
+> Claude Code tutorials and AI agent automation guides: hooks, headless mode, scheduling, permissions and cost control.
 
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
