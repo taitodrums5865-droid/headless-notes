@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://en.aobaworks.com/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://en.aobaworks.com/ai-agent-guardrails-example-copy-paste-claude-code-rules/</loc><lastmod>2026-10-19</lastmod></url>
+<url><loc>https://en.aobaworks.com/claude-code-rate-limit-reached-retry-setup-for-cron-jobs/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/</loc><lastmod>2026-10-17</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-how-to-see-token-usage-and-reduce-it/</loc><lastmod>2026-10-17</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-hooks-lifecycle-every-event-explained/</loc><lastmod>2026-10-16</lastmod></url>
@@ -9,7 +10,7 @@
 <url><loc>https://en.aobaworks.com/claude-code-checkpoints-how-rollback-works-in-automations/</loc><lastmod>2026-10-15</lastmod></url>
 <url><loc>https://en.aobaworks.com/why-claude-code-stops-mid-automation-and-how-to-fix-it/</loc><lastmod>2026-10-13</lastmod></url>
 <url><loc>https://en.aobaworks.com/tag/ai-agents/</loc><lastmod>2026-10-19</lastmod></url>
-<url><loc>https://en.aobaworks.com/tag/headless/</loc><lastmod>2026-10-17</lastmod></url>
+<url><loc>https://en.aobaworks.com/tag/headless/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://en.aobaworks.com/tag/hooks/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://en.aobaworks.com/about/</loc></url>
 <url><loc>https://en.aobaworks.com/privacy/</loc></url>

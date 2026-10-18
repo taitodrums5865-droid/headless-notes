@@ -6,6 +6,7 @@ Guides are researched from official sources, cite them, and are reviewed regular
 
 ## Guides
 - [AI Agent Guardrails Example: Copy-Paste Claude Code Rules](https://en.aobaworks.com/ai-agent-guardrails-example-copy-paste-claude-code-rules/): An AI agent guardrails example for Claude Code: copy-paste permission rules, hooks and CLI caps that stop runaway loops, destructive commands and cost spikes.
+- [Claude Code Rate Limit Reached: Retry Setup for Cron Jobs](https://en.aobaworks.com/claude-code-rate-limit-reached-retry-setup-for-cron-jobs/): Claude Code rate limit reached? Tell a 429 throttle from a plan or spend cap, read the retry-after headers, and set safe auto-retries for headless cron jobs.
 - [Claude Code Hooks Examples: 7 Copy-Paste Scripts](https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/): Claude Code hooks examples you can copy: 7 working scripts for guardrails, Stop-hook stall prevention, and usage logging, with settings.json and fixes.
 - [Claude Code: How to See Token Usage (and Reduce It)](https://en.aobaworks.com/claude-code-how-to-see-token-usage-and-reduce-it/): Claude Code how to see token usage: run /usage in a session, read total_cost_usd from headless JSON runs, check the Console Usage page, and set cost alerts.
 - [Claude Code Hooks Lifecycle: Every Event, Explained](https://en.aobaworks.com/claude-code-hooks-lifecycle-every-event-explained/): Claude Code hooks lifecycle explained: when each hook event fires in an automation run, and which ones stop runaway token use or silent failures.
