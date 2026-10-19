@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Permissions Best Practices: Headless Template](https://en.aobaworks.com/claude-code-permissions-best-practices-headless-template/): Claude Code permissions best practices for unattended runs: a settings.json allow/deny template, mode picks, and pre-flight checks so overnight jobs finish.
 - [AI Agent Guardrails Example: Copy-Paste Claude Code Rules](https://en.aobaworks.com/ai-agent-guardrails-example-copy-paste-claude-code-rules/): An AI agent guardrails example for Claude Code: copy-paste permission rules, hooks and CLI caps that stop runaway loops, destructive commands and cost spikes.
 - [Claude Code Rate Limit Reached: Retry Setup for Cron Jobs](https://en.aobaworks.com/claude-code-rate-limit-reached-retry-setup-for-cron-jobs/): Claude Code rate limit reached? Tell a 429 throttle from a plan or spend cap, read the retry-after headers, and set safe auto-retries for headless cron jobs.
 - [Claude Code Hooks Examples: 7 Copy-Paste Scripts](https://en.aobaworks.com/claude-code-hooks-examples-7-copy-paste-scripts/): Claude Code hooks examples you can copy: 7 working scripts for guardrails, Stop-hook stall prevention, and usage logging, with settings.json and fixes.
