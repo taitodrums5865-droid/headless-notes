@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://en.aobaworks.com/</loc><lastmod>2026-10-21</lastmod></url>
+<url><loc>https://en.aobaworks.com/claude-code-stuck-on-compacting-conversation-cron-watchdog/</loc><lastmod>2026-10-21</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-subagent-allowed-tools-syntax-examples-fixes/</loc><lastmod>2026-10-21</lastmod></url>
 <url><loc>https://en.aobaworks.com/ai-agent-vs-automation-a-5-question-test-for-claude-code/</loc><lastmod>2026-10-20</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-permissions-best-practices-headless-template/</loc><lastmod>2026-10-20</lastmod></url>
@@ -13,8 +14,8 @@
 <url><loc>https://en.aobaworks.com/claude-code-checkpoints-how-rollback-works-in-automations/</loc><lastmod>2026-10-15</lastmod></url>
 <url><loc>https://en.aobaworks.com/why-claude-code-stops-mid-automation-and-how-to-fix-it/</loc><lastmod>2026-10-13</lastmod></url>
 <url><loc>https://en.aobaworks.com/tag/ai-agents/</loc><lastmod>2026-10-20</lastmod></url>
-<url><loc>https://en.aobaworks.com/tag/cron/</loc><lastmod>2026-10-20</lastmod></url>
-<url><loc>https://en.aobaworks.com/tag/headless/</loc><lastmod>2026-10-20</lastmod></url>
+<url><loc>https://en.aobaworks.com/tag/cron/</loc><lastmod>2026-10-21</lastmod></url>
+<url><loc>https://en.aobaworks.com/tag/headless/</loc><lastmod>2026-10-21</lastmod></url>
 <url><loc>https://en.aobaworks.com/tag/hooks/</loc><lastmod>2026-10-21</lastmod></url>
 <url><loc>https://en.aobaworks.com/tag/permissions/</loc><lastmod>2026-10-21</lastmod></url>
 <url><loc>https://en.aobaworks.com/about/</loc></url>
