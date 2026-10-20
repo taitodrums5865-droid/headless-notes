@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Subagent allowed-tools: Syntax, Examples, Fixes](https://en.aobaworks.com/claude-code-subagent-allowed-tools-syntax-examples-fixes/): Claude Code subagent allowed-tools explained: the real field is tools, plus disallowedTools, MCP wildcards, inherit vs restrict, and hooks that enforce it.
 - [AI Agent vs Automation: A 5-Question Test for Claude Code](https://en.aobaworks.com/ai-agent-vs-automation-a-5-question-test-for-claude-code/): AI agent vs automation, settled with a 5-question test: when a Claude Code agent is worth its cost and when a plain script or cron job is the better choice.
 - [Claude Code Permissions Best Practices: Headless Template](https://en.aobaworks.com/claude-code-permissions-best-practices-headless-template/): Claude Code permissions best practices for unattended runs: a settings.json allow/deny template, mode picks, and pre-flight checks so overnight jobs finish.
 - [AI Agent Guardrails Example: Copy-Paste Claude Code Rules](https://en.aobaworks.com/ai-agent-guardrails-example-copy-paste-claude-code-rules/): An AI agent guardrails example for Claude Code: copy-paste permission rules, hooks and CLI caps that stop runaway loops, destructive commands and cost spikes.
