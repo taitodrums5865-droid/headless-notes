@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Subagents Model Selection: Role-by-Role Table](https://en.aobaworks.com/claude-code-subagents-model-selection-role-by-role-table/): Claude Code subagents model selection made practical: when to give each subagent Haiku, Sonnet, Opus or inherit, with official prices, steps and fixes.
 - [Claude Code Stuck on Compacting Conversation: Cron Watchdog](https://en.aobaworks.com/claude-code-stuck-on-compacting-conversation-cron-watchdog/): Claude Code stuck on compacting conversation? Why it hangs in headless and cron runs, the real auto-compact defaults, and a watchdog script that recovers.
 - [Claude Code Subagent allowed-tools: Syntax, Examples, Fixes](https://en.aobaworks.com/claude-code-subagent-allowed-tools-syntax-examples-fixes/): Claude Code subagent allowed-tools explained: the real field is tools, plus disallowedTools, MCP wildcards, inherit vs restrict, and hooks that enforce it.
 - [AI Agent vs Automation: A 5-Question Test for Claude Code](https://en.aobaworks.com/ai-agent-vs-automation-a-5-question-test-for-claude-code/): AI agent vs automation, settled with a 5-question test: when a Claude Code agent is worth its cost and when a plain script or cron job is the better choice.
