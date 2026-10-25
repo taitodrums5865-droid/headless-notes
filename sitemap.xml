@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://en.aobaworks.com/</loc><lastmod>2026-10-25</lastmod></url>
+<url><loc>https://en.aobaworks.com/</loc><lastmod>2026-10-26</lastmod></url>
+<url><loc>https://en.aobaworks.com/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs/</loc><lastmod>2026-10-26</lastmod></url>
 <url><loc>https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/</loc><lastmod>2026-10-25</lastmod></url>
 <url><loc>https://en.aobaworks.com/ai-agent-monitoring-in-claude-code-catch-silent-failures/</loc><lastmod>2026-10-23</lastmod></url>
 <url><loc>https://en.aobaworks.com/claude-code-headless-mode-flags-auth-and-cost-2026/</loc><lastmod>2026-10-23</lastmod></url>

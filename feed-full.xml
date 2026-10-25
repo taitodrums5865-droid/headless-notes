@@ -1,5 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/"><channel><title>Unattended</title><link>https://en.aobaworks.com/</link><atom:link href="https://en.aobaworks.com/feed-full.xml" rel="self" type="application/rss+xml"/><description>Claude Code tutorials and AI agent automation guides: hooks, headless mode, scheduling, permissions and cost control.</description><language>en</language><lastBuildDate>Sun, 25 Oct 2026 03:00:00 GMT</lastBuildDate><copyright>© 2026 Aoba Works</copyright><item><title>AI Agent Evaluation Framework: Claude Code Eval Loop Steps</title><link>https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/</link><guid isPermaLink="true">https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/</guid><pubDate>Sun, 25 Oct 2026 03:00:00 GMT</pubDate><dc:creator>Aoba Works</dc:creator><description>An AI agent evaluation framework for Claude Code: write tasks and graders, run each several times, and track pass rate and pass^k. Includes a harness.</description><category>agent evals</category><category>claude code</category><category>ai agents</category><category>evaluation</category><category>testing</category><category>pass rate</category><content:encoded><![CDATA[<figure><img src="https://en.aobaworks.com/og/ai-agent-evaluation-framework-claude-code-eval-loop-steps.png" alt="AI Agent Evaluation Framework: Claude Code Eval Loop Steps" width="1200" height="630"></figure><p class="meta ai-note">How this guide was made: drafted with AI assistance from the official sources linked below, then passed an automated editorial check before publishing. <a href="https://en.aobaworks.com/about/#how-guides-are-made">Our process</a></p><p>An AI agent evaluation framework is a repeatable loop. You give the agent a fixed set of tasks, run each one several times in a clean environment, score the final result with graders, and track pass rates from run to run. Anthropic's engineering team describes an evaluation as <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" rel="noopener">"a test for an AI system: give an AI an input, then apply grading logic to its output to measure success."</a> For Claude Code, that means a folder of tasks, a shell script that calls <code>claude -p</code> several times per task, a grader script for each task, and a CSV file you check after every model or prompt change.</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/"><channel><title>Unattended</title><link>https://en.aobaworks.com/</link><atom:link href="https://en.aobaworks.com/feed-full.xml" rel="self" type="application/rss+xml"/><description>Claude Code tutorials and AI agent automation guides: hooks, headless mode, scheduling, permissions and cost control.</description><language>en</language><lastBuildDate>Mon, 26 Oct 2026 03:00:00 GMT</lastBuildDate><copyright>© 2026 Aoba Works</copyright><item><title>AI Agent Evaluation Metrics: Pass Rate Across Repeat Runs</title><link>https://en.aobaworks.com/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs/</link><guid isPermaLink="true">https://en.aobaworks.com/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs/</guid><pubDate>Mon, 26 Oct 2026 03:00:00 GMT</pubDate><dc:creator>Aoba Works</dc:creator><description>AI agent evaluation metrics for Claude Code: compute pass@k, pass^k, variance across N reruns and judge-score drift to catch flaky or silently wrong runs.</description><category>"agent evals</category><category>claude code</category><category>pass@k</category><category>evaluation metrics</category><category>flaky runs</category><category>llm judge</category><content:encoded><![CDATA[<figure><img src="https://en.aobaworks.com/og/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs.png" alt="AI Agent Evaluation Metrics: Pass Rate Across Repeat Runs" width="1200" height="630"></figure><p class="meta ai-note">How this guide was made: drafted with AI assistance from the official sources linked below, then passed an automated editorial check before publishing. <a href="https://en.aobaworks.com/about/#how-guides-are-made">Our process</a></p><pre><code>
+Track three AI agent evaluation metrics for Claude Code runs that nobody watches. The first is **pass@k**: can the agent solve the task at all within k tries? The second is **pass^k**, or pass rate across repeat runs: does it succeed every time? The third is **graded-score drift**: is the quality score from your grader slowly falling on input that hasn&#x27;t changed? Run each task 10–20 times in a clean environment and log a pass/fail result plus a score for every run. Then compute these numbers before you let a cron job run the agent alone.
+
+Anthropic defines the second metric as one that &quot;measures the probability that all k trials succeed&quot; ([Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)). That&#x27;s the question an overnight automation actually asks. The [pillar guide on the eval loop](/ai-agent-evaluation-framework-claude-code-eval-loop-steps/) names these metrics. This guide shows how to choose and compute them.
+
+## Which option is right for you?
+
+If you&#x27;re starting out, use a bash loop around `claude -p` plus a short Python script. Move to a framework only once you have more than a handful of tasks.
+
+| Your situation | What to pick first | First page to open |
+|---|---|---|
+| Beginner, one or two recurring tasks | Bash loop + `claude -p --output-format json` + pass rate over 10 reruns | [Claude Code headless docs](https://code.claude.com/docs/en/headless) |
+| Daily work use, cron jobs already running | pass^k on a fixed set of 20–50 tasks, gated before every prompt/model change | [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) |
+| Many tasks, want a results table and assertions | Promptfoo with `--repeat` and the `anthropic:claude-agent-sdk` provider | [Promptfoo: Evaluate Coding Agents](https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/) |
+| Tight budget | Code-based graders only (tests, file checks); skip LLM judges at first | [Promptfoo command line docs](https://www.promptfoo.dev/docs/usage/command-line/) |
+| Output is prose or reviews, not code | Add an LLM-judge score and track its drift | Section on graded-score drift below |
+
+Here&#x27;s why each pick fits. A bash loop teaches you what the numbers mean before a tool hides them. pass^k is the metric that matches &quot;runs without me&quot;. Promptfoo saves you from writing your own repeat-and-cache plumbing. Code graders cost nothing per run. And prose can&#x27;t be checked by `npm test`.
+
+## What Are Evaluation Metrics in AI Agent Testing?
+
+In Claude Code testing, an evaluation metric is a rule that turns each run&#x27;s result into a pass/fail or a score. That lets you compare runs instead of eyeballing transcripts.
+
+Anthropic&#x27;s evals post uses four words you&#x27;ll need throughout this guide:
+
+- A **task** is &quot;[a single test with defined inputs and success criteria](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;.
+- A **trial** is one attempt at a task. You run several, &quot;[because model outputs vary between runs](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;.
+- A **grader** is the logic that scores the trial.
+- The **outcome** is the final state of the environment when the trial ends.
+
+A metric sits on top of these. It&#x27;s what you get when you add up grader results across trials and tasks.
+
+For example, say your nightly job asks Claude Code to &quot;bump the patch version, update CHANGELOG.md, and make the test suite pass&quot;. The task is that prompt plus a frozen copy of the repo. A grader might check three things: `npm test` exits 0, `package.json` has the expected version, and `CHANGELOG.md` has a new top entry. One trial gives one pass/fail. Ten trials give a pass rate. That pass rate is the metric.
+
+**Pitfalls:**
+
+- **Treating the exit code as the metric.** Claude Code exits with code 0 on success ([headless docs](https://code.claude.com/docs/en/headless)). That means the run ended normally, not that the work is right. A run can exit 0 after editing the wrong file. Always grade the outcome (tests, files, diff) separately from the exit status.
+- **Scoring the transcript text.** A confident summary like &quot;All tests pass!&quot; isn&#x27;t evidence. Run the tests yourself in the grader.
+- **No reference solution.** Anthropic recommends tasks that are unambiguous, with a known solution that proves they can be solved. If you can&#x27;t write the passing answer yourself, the metric can&#x27;t tell a model failure from a broken task.
+
+## What Is Evaluation Metrics in Machine Learning (and How Agent Evals Differ)?
+
+Classic machine learning metrics score one fixed prediction against a fixed label. Agent evals for tools like Claude Code score multi-step runs that can succeed in different ways or fail quietly partway through.
+
+scikit-learn describes [accuracy](https://scikit-learn.org/stable/modules/model_evaluation.html) as &quot;the fraction (default) or the count (normalize=False) of correct predictions&quot;. Precision, recall and F1 refine that for imbalanced classes. These metrics assume something that agent runs break: the same input always produces the same output, and there&#x27;s one correct label to compare against.
+
+| Property | Classic ML metrics (accuracy, F1) | Coding-agent evals (Claude Code) |
+|---|---|---|
+| Unit scored | One prediction | A whole trial: tool calls, edits, final repo state |
+| Determinism | A fixed model gives the same prediction | Same prompt, different paths and results per run |
+| Ground truth | A label | A checkable end state (tests pass, file exists, no stray changes) |
+| Valid answers | Usually one | Many diffs can be correct |
+| Repeats needed | Once per example | Multiple trials per task to estimate a rate |
+| Silent failure mode | Wrong label | Plausible summary over a broken or partial change |
+
+The practical difference is the repeats. A classifier&#x27;s accuracy on a test set is fixed once you freeze the model. A Claude Code task&#x27;s pass rate is a probability, and you can only estimate it by sampling.
+
+That&#x27;s why the Codex paper that made pass@k popular reported two numbers. Its model solved 28.8% of HumanEval problems with 1 sample per problem ([Chen et al.](https://arxiv.org/abs/2107.03374)), and &quot;[70.2% of our problems with 100 samples per problem](https://arxiv.org/abs/2107.03374)&quot;. Same model, same problems. The only difference was how many tries it got.
+
+**Pitfall:** Don&#x27;t borrow precision/recall unless your agent really is classifying something. A triage agent that labels issues fits that frame. An agent that writes code needs pass rates.
+
+## What Is Evaluation in AI (Agent Context)?
+
+For Claude Code, evaluation means rerunning a task many times and checking the final state it leaves. A plausible-looking output isn&#x27;t enough; the outcome has to match what you intended.
+
+Anthropic&#x27;s rule for this is to &quot;[grade what the agent produced, not the path it took](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;. If Claude fixes a bug by editing `utils.ts` when you expected `auth.ts`, and the tests pass with no unrelated changes, that counts as a pass. Grading the exact steps penalizes valid alternatives and makes your metric noisier.
+
+The same post warns that &quot;[unnecessary shared state between runs (leftover files, cached data, resource exhaustion) can cause correlated failures](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;. That&#x27;s why a single trial needs a clean environment.
+
+Steps for one evaluation trial:
+
+1. **Reset the environment.** Make a fresh checkout or worktree of a pinned commit. Don&#x27;t reuse the last trial&#x27;s folder.
+2. **Run the agent headless.** Use `claude -p &quot;&lt;task prompt&gt;&quot; --output-format json` so the result and metadata come back as JSON ([headless docs](https://code.claude.com/docs/en/headless)).
+3. **Grade the outcome.** Run tests, check files, and run `git diff --stat` to spot changes outside the expected paths.
+4. **Record one row.** Save the task id, trial number, pass/fail, score if any, cost and duration.
+5. **Read some transcripts.** Anthropic notes that 0% pass@100 usually points to a broken task spec, not a hopeless agent ([Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)). You only find that out by reading what happened.
+
+If you already run Claude Code from cron, this is the same command your job uses, pointed at a frozen copy of the repo. See [Claude Code Headless Mode: Flags, Auth and Cost](/claude-code-headless-mode-flags-auth-and-cost-2026/) for the flags and auth.
+
+## What Are the Core AI Agent Performance Metrics?
+
+The core metrics are pass@k, pass^k, success rate, cost, latency and turns per task. Compute all of them on a fixed task set.
+
+Here are the definitions and the numbers to compute:
+
+| Metric | What it answers | How to compute from n trials with c passes | Where the data comes from |
+|---|---|---|---|
+| pass@1 (success rate) | How often does one run succeed? | c / n | Your grader |
+| pass@k | Can it solve this at all within k tries? | 1 − C(n−c, k) / C(n, k) | Your grader |
+| pass^k | Will k runs in a row all succeed? | C(c, k) / C(n, k) | Your grader |
+| Cost per task | What does one trial cost? | Mean of `total_cost_usd` | [`--output-format json`](https://code.claude.com/docs/en/headless) |
+| Latency per task | How long does a trial take? | Mean or p90 of `duration_ms` | [SDK result message](https://code.claude.com/docs/en/agent-sdk/typescript) |
+| Turns per task | How much back-and-forth did it need? | Mean of `num_turns` | [SDK result message](https://code.claude.com/docs/en/agent-sdk/typescript) |
+| Cost per successful task | What do you pay per good result? | Total cost / c | Both |
+
+The pass@k formula is the unbiased estimator from the Codex paper: pass@k := E[1 − C(n−c, k)/C(n, k)]. The paper calls the shortcut 1 − (1 − p̂)^k &quot;[biased](https://arxiv.org/html/2107.03374)&quot;, and its authors drew n=200 samples per problem for k ≤ 100 ([Chen et al., section 2.1](https://arxiv.org/html/2107.03374)).
+
+pass^k comes from τ-bench, which introduced it as &quot;[a new metric to evaluate the reliability of agent behavior over multiple trials](https://arxiv.org/abs/2406.12045)&quot;. The C(c,k)/C(n,k) form above uses the same combinatorial idea: the share of k-sized subsets of your trials in which every trial passed.
+
+The two metrics move in opposite directions as k grows. Anthropic&#x27;s example uses a 75% per-trial success rate, where the chance that all 3 of 3 trials pass is about 42% (0.75³) ([Anthropic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)). As k rises, pass@k heads toward 100% and pass^k falls. τ-bench found leading function-calling agents were &quot;[quite inconsistent (pass^8 &lt;25% in retail)](https://arxiv.org/abs/2406.12045)&quot;.
+
+To see how this works out, here&#x27;s an example calculation (illustrative numbers, not a measurement). You run a task 10 times and 7 pass.
+
+- pass@1 = 0.70
+- pass@3 = 1 − C(3,3)/C(10,3) = 1 − 1/120 ≈ 0.99
+- pass^3 = C(7,3)/C(10,3) = 35/120 ≈ 0.29
+
+&quot;It basically always works&quot; (pass@3) and &quot;three nights in a row, it fails at least once about 70% of the time&quot; (pass^3) describe the same 10 runs. For unattended work, believe pass^k.
+
+**Which k should you use?** Match k to how you actually run the job. If a human picks the best of three drafts, pass@3 is fine. If cron runs it daily and nobody checks, use pass^k with k equal to how many runs you&#x27;d let happen before you look. For example, k=7 if you review weekly.
+
+## How Do AI Agent Performance Metrics Work in Amazon Connect?
+
+Amazon Connect&#x27;s agent metrics measure contact-center agents and AI assistants, not code correctness. Only the idea of &quot;a rate over many interactions&quot; carries over to Claude Code.
+
+AWS defines metrics like these in the [Amazon Connect metric definitions](https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html):
+
+| Amazon Connect metric (API id) | What AWS says it measures | Nearest Claude Code equivalent | Does it transfer? |
+|---|---|---|---|
+| Average handle time (`AVG_HANDLE_TIME`) | Agent interaction, hold and after-contact work time | Mean `duration_ms` per trial | Partly: latency only |
+| AI handoff rate (`AI_HANDOFF_RATE`) | Share of AI-handled contacts escalated to humans or extra support | Share of runs that need your manual fix | Yes, as an idea |
+| AI agent invocation success rate (`AI_AGENT_INVOCATION_SUCCESS_RATE`) | Share of invocations that &quot;[executed successfully without technical failures](https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html)&quot; | Share of runs with exit code 0 | Only as a health check |
+| Agent answer rate (`AGENT_ANSWER_RATE`) | (Contacts accepted / total routing attempts) × 100 | None | No |
+
+If you came here from a search about Connect, the useful lesson is the gap between the last two rows. &quot;Invocation success&quot; in Connect, and exit code 0 in Claude Code, both tell you that nothing crashed. Neither tells you the answer was right.
+
+**Pitfall:** Reporting invocation success as your quality metric. A coding agent can have 100% clean exits and a 60% pass rate. Track both. The pass rate is the one that matters, and clean exits are only a health signal.
+
+**Fix:** Pair any health metric with an outcome grader. In Connect terms, that&#x27;s like pairing invocation success with handoff rate. In Claude Code, pair exit status with your test-based grader.
+
+## What Are the Common AI Agent Evaluation Metrics for Coding Agents?
+
+Three metrics matter most: pass rate across N reruns, run-to-run variance, and graded-score drift. This holds especially for solo builders who run Claude Code repeatedly.
+
+Most top-ranking pages on this query list categories: task completion, tool-call accuracy, latency, business KPIs. They rarely show how to separate a flaky task from a reliable one. That&#x27;s the part that decides whether a cron job is safe.
+
+### Pass rate across N reruns
+
+Run each task n times (10 is a sensible minimum, 20 if the task is cheap). Record c passes per task and compute pass@1, pass@k and pass^k as shown above. Anthropic suggests starting with &quot;[20-50 simple tasks](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot; taken from real failures, so you don&#x27;t need a big benchmark.
+
+### Variance across reruns (flakiness)
+
+Flakiness is simple to detect. A task is flaky when 0 &lt; c &lt; n: it passed sometimes and failed sometimes on the same input. The harder question is how sure you can be about its pass rate. A pass rate p from n trials has a standard error of about √(p(1−p)/n). Here&#x27;s an example: at p=0.7 and n=10, that&#x27;s √(0.021) ≈ 0.145, so roughly ±14 percentage points. That&#x27;s arithmetic, not a measurement.
+
+So with 10 reruns, you can&#x27;t reliably tell a 70% task from an 85% task. Two rules follow:
+
+1. **Count flaky tasks, not just the average.** &quot;18 of 20 tasks are 10/10, two are 4/10&quot; is far more useful than &quot;88% overall&quot;. The two flaky tasks are where your overnight failures will come from.
+2. **Rerun before you conclude.** If a prompt change moves a task from 7/10 to 9/10, run another 10 before you believe it.
+
+Promptfoo&#x27;s coding-agent guide puts the next step bluntly: &quot;[If a prompt fails 50% of the time, the prompt is ambiguous.](https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/)&quot; Its advice is to fix the instructions rather than add retries. Retries raise pass@k but leave pass^k where it was.
+
+### Graded-score drift
+
+Drift is a slow fall in a 1–5 or 0–100 quality score on input that hasn&#x27;t changed. It matters for output that tests can&#x27;t fully check, like PR review comments, changelogs or docs. You track it by keeping a baseline and comparing each new batch against it.
+
+Steps:
+
+1. Freeze 10–20 inputs, and have an LLM judge score each output with a fixed rubric (for example, 1–5 for &quot;covers every changed function&quot;).
+2. **Measure judge noise first.** Grade the *same* saved transcripts twice. Anthropic notes model-based graders are &quot;[non-deterministic](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;, so part of any movement is the judge, not the agent.
+3. Set the baseline as the mean score of your first full batch.
+4. On each later batch, flag drift when the mean drops by more than about twice the standard error of the batch mean, or by an absolute threshold you choose (for example, 0.3 on a 5-point scale). These numbers are illustrative.
+5. When drift fires, diff the transcripts from a high-scoring baseline run and a low-scoring new run. Look at what changed, such as a new model, a CLAUDE.md edit or an MCP server.
+
+**Pitfall:** Changing the judge prompt or judge model mid-series. Every judge change resets the baseline. Keep a `judge_version` column and never compare scores across versions.
+
+## How Do You Set Up Metrics Visualization for an AI Agent Evaluation Framework?
+
+A minimal Claude Code framework appends one JSON line per trial to a file and then plots pass rate and score per task over time.
+
+Here&#x27;s the logging loop. It&#x27;s an example script, so adapt the paths and the grader to your project. It uses only flags from the [headless docs](https://code.claude.com/docs/en/headless): `-p`, `--output-format json`, `--allowedTools`, and `--bare`. Bare mode skips local hooks, plugins, MCP servers and CLAUDE.md, so every trial starts the same way. It needs `ANTHROPIC_API_KEY`, because bare mode &quot;doesn&#x27;t use your subscription login&quot; ([headless docs](https://code.claude.com/docs/en/headless)).
+</code></pre>
+<p>#!/usr/bin/env bash # eval.sh &lt;task_id&gt; &lt;prompt_file&gt; &lt;runs&gt;   (example) set -u TASK="$1"; PROMPT=$(cat "$2"); RUNS="${3:-10}" for i in $(seq 1 "$RUNS"); do DIR=$(mktemp -d) git worktree add --detach "$DIR" eval-base &gt;/dev/null 2&gt;&amp;1 OUT=$(cd "$DIR" &amp;&amp; claude --bare -p "$PROMPT" \ --allowedTools "Read,Edit,Bash" --output-format json) EXIT=$? (cd "$DIR" &amp;&amp; npm test &gt;/dev/null 2&gt;&amp;1) &amp;&amp; PASS=1 || PASS=0 echo "$OUT" | jq -c --arg t "$TASK" --argjson i "$i" \ --argjson p "$PASS" --argjson e "$EXIT" \ '{task:$t, trial:$i, pass:$p, exit:$e, cost:.total_cost_usd, ts:(now|todate)}' &gt;&gt; results.jsonl git worktree remove --force "$DIR" done</p>
+<pre><code>
+Then summarize and plot the results (also an example):
+</code></pre>
+<p>import json, math, collections import matplotlib.pyplot as plt rows = [json.loads(l) for l in open("results.jsonl")] by = collections.defaultdict(list) for r in rows: by[r["task"]].append(r["pass"]) def pass_at(n,c,k): return 1 - math.comb(n-c,k)/math.comb(n,k) def pass_hat(n,c,k): return math.comb(c,k)/math.comb(n,k) for t, v in by.items(): n, c = len(v), sum(v) print(t, f"p1={c/n:.2f}", f"pass@3={pass_at(n,c,3):.2f}", f"pass^3={pass_hat(n,c,3):.2f}", "FLAKY" if 0&lt;c&lt;n else "") tasks = list(by) plt.bar(tasks, [sum(by[t])/len(by[t]) for t in tasks]) plt.ylabel("pass rate"); plt.ylim(0,1); plt.savefig("pass_rate.png")</p>
+<pre><code>
+What to chart, in order of usefulness:
+
+1. **Bar chart of pass rate per task**, with flaky tasks highlighted. This is your daily view.
+2. **Line chart of pass^k for the whole suite**, one point per eval batch, with batches labeled by model or prompt version. This shows regressions.
+3. **Line chart of mean judge score** with a band of ± two standard errors. This shows drift.
+4. **Cost per successful task** per batch. Retries and long loops show up here before they show up on your bill. The guide to [seeing and reducing token usage in Claude Code](/claude-code-how-to-see-token-usage-and-reduce-it/) covers where the tokens go.
+
+Two caveats from the docs apply. First, `total_cost_usd` is a client-side estimate that &quot;can differ from your actual bill&quot; ([headless docs](https://code.claude.com/docs/en/headless)). Second, if a run ends without valid structured output, the JSON has no `structured_output` field, so check the field exists before your grader reads it.
+
+**When to switch to Promptfoo instead:** use it when you have dozens of tasks and want a results table without writing your own. `promptfoo eval --repeat 3` runs each test 3 times ([command line docs](https://www.promptfoo.dev/docs/usage/command-line/)). Each repeat gets its own cache namespace, and the docs say to add `--no-cache` when you want fresh calls every time ([command line docs](https://www.promptfoo.dev/docs/usage/command-line/)). The Claude Agent SDK provider id is `anthropic:claude-agent-sdk` ([coding agents guide](https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/)).
+
+Promptfoo isn&#x27;t for you if you have two tasks and want zero new dependencies. It also has a limitation for this guide: it reports per-test pass/fail, and you still compute pass^k from those results yourself.
+
+## How Do You Build an AI Agent Evaluation Framework? A Metrics Checklist
+
+Pick fixed tasks, grade them, rerun them, and block changes that fall below a threshold. In between, compute pass@k and pass^k for every task.
+
+Follow this order:
+
+1. **Pick 20–50 tasks from real work.** Use failures from your own cron logs first. The [silent-failure monitoring guide](/ai-agent-monitoring-in-claude-code-catch-silent-failures/) explains how to spot them.
+2. **Write a reference solution for each task**, so you know the task can be solved.
+3. **Write a code-based grader for each task**: tests, file checks, and an allow-list of paths the diff may touch. Add an LLM judge only for output tests can&#x27;t check.
+4. **Pin the environment.** Tag a commit (`eval-base` in the script above), use `--bare`, and give every trial a fresh worktree.
+5. **Run n=10 trials per task** (20 for tasks you&#x27;ll run unattended daily).
+6. **Compute per task:** pass@1, pass^k (k = runs between your reviews), a flaky flag, mean cost, and judge mean if you use one.
+7. **Set gates.** For example, every unattended task must hit pass^k ≥ 0.9 with no new flaky tasks compared with the last batch. These thresholds are illustrative, so pick ones that match how costly a bad night is for you.
+8. **Rerun the full suite after every change**: model, prompt, CLAUDE.md, hooks, MCP servers, or a Claude Code upgrade. Anthropic calls these regression evals, which ask &quot;[Does the agent still handle all the tasks it used to?](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)&quot;
+9. **Read transcripts for every task at 0% or 100%** at least once. A 0% usually means a broken task. A long run of 100% means the task is saturated and no longer tells you anything.
+10. **Only then schedule it.** Follow the [cron job setup guide](/claude-code-cron-job-setup-run-automations-overnight/) and keep the same flags as your eval.
+
+Common mistakes and fixes:
+
+| Mistake | What it does to the metric | Fix |
+|---|---|---|
+| Reusing the same folder across trials | Correlated failures; pass rate looks worse (or better) than it is | Fresh worktree per trial |
+| Running without `--bare` | A local hook or MCP server changes behavior between machines | `--bare`, and pass context with flags |
+| Promptfoo repeats served from cache | Every repeat is identical, so variance looks like 0 | Add `--no-cache` |
+| Adding retries to &quot;fix&quot; a flaky task | pass@k rises, pass^k stays flat | Clarify the prompt or the task, then rerun |
+| Judging with the same model and prompt you&#x27;re testing | Judge shares the agent&#x27;s blind spots | Use a fixed rubric and check it against your own labels on a few samples |
+| Comparing 7/10 vs 8/10 as a real change | Inside noise (±14 pts at n=10) | Rerun; compare only large or repeated shifts |
+
+If a batch regresses after a change, roll back the prompt or config first, then investigate. The [checkpoints and rollback guide](/claude-code-checkpoints-how-rollback-works-in-automations/) explains what Claude Code can and can&#x27;t undo.
+
+## Next steps
+
+Do these today:
+
+1. Pick the one cron task that worries you most. Freeze a commit, and run `eval.sh` on it with `RUNS=10`.
+2. Compute pass@1 and pass^7 with the Python snippet. If pass^7 is below what you&#x27;d accept for a week unattended, the task isn&#x27;t ready to run alone.
+3. If any task is flaky (0 &lt; c &lt; 10), rewrite its prompt to remove the ambiguity and rerun 10 more before changing anything else.
+
+If you&#x27;d rather not build this yourself, here are some options:
+
+- **A Claude subscription that includes Claude Code**: Pro is &quot;$20 if billed monthly&quot; ([Claude pricing](https://claude.com/pricing)), and Max starts &quot;From $100 Per month&quot; ([Claude pricing](https://claude.com/pricing)) (as of October 2026; check the official page). It suits builders who run evals interactively and often. It&#x27;s not the right fit for the `--bare` script above, which bills to an `ANTHROPIC_API_KEY` on the Anthropic API instead of your subscription.
+- **Promptfoo**: a ready-made runner with repeats, assertions and a provider for the Claude Agent SDK ([guide](https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/)). It suits people with many tasks. It&#x27;s not worth it for one or two tasks, and you still compute pass^k yourself.
+- **Anthropic&#x27;s evals post** is a free reference if you want to design graders more carefully before you automate anything ([read it](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)).
+
+Related guides on this site:
+
+- [AI Agent Evaluation Framework: Claude Code Eval Loop Steps](/ai-agent-evaluation-framework-claude-code-eval-loop-steps/), the overview this guide expands on
+- [AI Agent Monitoring in Claude Code: Catch Silent Failures](/ai-agent-monitoring-in-claude-code-catch-silent-failures/)
+- [Claude Code Headless Mode: Flags, Auth and Cost (2026)](/claude-code-headless-mode-flags-auth-and-cost-2026/)
+- [Claude Code Cron Job Setup: Run Automations Overnight](/claude-code-cron-job-setup-run-automations-overnight/)
+
+## FAQ
+
+### What is evaluation metrics in machine learning?
+
+Evaluation metrics in machine learning are formulas that score a model&#x27;s predictions against known labels, such as accuracy, precision, recall and F1 in [scikit-learn](https://scikit-learn.org/stable/modules/model_evaluation.html). They assume a fixed model gives the same prediction for the same input. AI agents break that assumption, so agent evals add repeated trials and rates like pass@k.
+
+### What is evaluation in AI?
+
+In the AI agent context, evaluation means running a defined task, grading the outcome with code or a model, and repeating it enough times to estimate how often the agent succeeds. For coding agents like Claude Code, you grade the final repo state (tests, files, diff), not the explanation the agent writes.
+
+### What are ai agent performance metrics in Amazon Connect?
+
+In Amazon Connect they&#x27;re contact-center metrics such as average handle time, AI handoff rate and AI agent invocation success rate, defined in the [AWS metric definitions](https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html). They measure customer conversations, not code correctness. Invocation success only means no technical failure occurred.
+
+### What are common ai agent evaluation metrics?
+
+The common ones are task success rate (pass@1), pass@k, pass^k, tool-call accuracy, cost per task, latency and turns per task. For unattended Claude Code jobs, pass^k and the number of flaky tasks are the most useful, because they predict failures across consecutive runs.
+
+### How does ai agent evaluation framework metrics visualization work?
+
+You log one record per trial (task, pass/fail, score, cost, timestamp, version) and chart it. A per-task pass-rate bar chart shows flaky tasks. A pass^k line across batches shows regressions after changes, and a judge-score line with an error band shows drift.
+
+## Sources
+
+- [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+- [Claude Code docs: Run Claude Code programmatically (headless)](https://code.claude.com/docs/en/headless)
+- [Claude Agent SDK TypeScript reference (result message fields)](https://code.claude.com/docs/en/agent-sdk/typescript)
+- [Chen et al., Evaluating Large Language Models Trained on Code (arXiv:2107.03374)](https://arxiv.org/abs/2107.03374) and [HTML version, section 2.1](https://arxiv.org/html/2107.03374)
+- [Yao et al., τ-bench (arXiv:2406.12045)](https://arxiv.org/abs/2406.12045)
+- [scikit-learn: Metrics and scoring](https://scikit-learn.org/stable/modules/model_evaluation.html)
+- [AWS: Amazon Connect metric definitions](https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html)
+- [Promptfoo: Evaluate Coding Agents](https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/)
+- [Promptfoo: Command line](https://www.promptfoo.dev/docs/usage/command-line/)
+- [Claude pricing](https://claude.com/pricing)
+- [SWE-bench evaluation guide](https://www.swebench.com/SWE-bench/guides/evaluation/)
+- Top results reviewed for the query: [Amplitude](https://amplitude.com/explore/analytics/ai-agent-evaluation-metrics), [Weights &amp; Biases](https://wandb.ai/onlineinference/genai-research/reports/AI-agent-evaluation-Metrics-strategies-and-best-practices--VmlldzoxMjM0NjQzMQ), [IBM](https://www.ibm.com/think/topics/ai-agent-evaluation)</code></pre><p>Originally published at <a href="https://en.aobaworks.com/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs/">Unattended</a>.</p>]]></content:encoded><enclosure url="https://en.aobaworks.com/og/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs.png" type="image/png" length="40425"/><media:content url="https://en.aobaworks.com/og/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs.png" medium="image" type="image/png" width="1200" height="630"/></item><item><title>AI Agent Evaluation Framework: Claude Code Eval Loop Steps</title><link>https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/</link><guid isPermaLink="true">https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/</guid><pubDate>Sun, 25 Oct 2026 03:00:00 GMT</pubDate><dc:creator>Aoba Works</dc:creator><description>An AI agent evaluation framework for Claude Code: write tasks and graders, run each several times, and track pass rate and pass^k. Includes a harness.</description><category>agent evals</category><category>claude code</category><category>ai agents</category><category>evaluation</category><category>testing</category><category>pass rate</category><content:encoded><![CDATA[<figure><img src="https://en.aobaworks.com/og/ai-agent-evaluation-framework-claude-code-eval-loop-steps.png" alt="AI Agent Evaluation Framework: Claude Code Eval Loop Steps" width="1200" height="630"></figure><p class="meta ai-note">How this guide was made: drafted with AI assistance from the official sources linked below, then passed an automated editorial check before publishing. <a href="https://en.aobaworks.com/about/#how-guides-are-made">Our process</a></p><p>An AI agent evaluation framework is a repeatable loop. You give the agent a fixed set of tasks, run each one several times in a clean environment, score the final result with graders, and track pass rates from run to run. Anthropic's engineering team describes an evaluation as <a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" rel="noopener">"a test for an AI system: give an AI an input, then apply grading logic to its output to measure success."</a> For Claude Code, that means a folder of tasks, a shell script that calls <code>claude -p</code> several times per task, a grader script for each task, and a CSV file you check after every model or prompt change.</p>
 <h2 id="which-option-is-right-for-you">Which option is right for you?</h2>
 <p>Most solo builders should start with a shell script and a CSV file. Add a tool only when the CSV gets hard to read.</p>
 <div class="table-wrap"><table><thead><tr><th>Your situation</th><th>What to pick first</th><th>First page to open</th></tr></thead><tbody><tr><td>Beginner with one Claude Code automation</td><td>A shell script that runs <code>claude -p</code> 3-5 times per task and appends results to a CSV. No new tools to install.</td><td><a href="https://code.claude.com/docs/en/headless" rel="noopener">Claude Code headless docs</a></td></tr><tr><td>Daily work use with several cron jobs</td><td>promptfoo with its Claude Agent SDK provider. You get repeats, assertions and a local results viewer.</td><td><a href="https://www.promptfoo.dev/docs/providers/claude-agent-sdk/" rel="noopener">promptfoo Claude Agent SDK provider</a></td></tr><tr><td>Zero budget beyond API spend</td><td>The DIY script plus <code>--max-budget-usd</code> on each run so a bad eval can't run up costs</td><td><a href="https://code.claude.com/docs/en/cli-reference" rel="noopener">CLI reference</a></td></tr><tr><td>Small team that needs shared dashboards</td><td>A hosted platform such as Braintrust or LangSmith (both have free tiers)</td><td><a href="https://www.braintrust.dev/pricing" rel="noopener">Braintrust pricing</a></td></tr><tr><td>Already on Databricks</td><td>MLflow 3 GenAI evaluation (formerly Mosaic AI Agent Evaluation)</td><td><a href="https://docs.databricks.com/aws/en/generative-ai/agent-evaluation/" rel="noopener">Databricks agent evaluation docs</a></td></tr></tbody></table></div>
