@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Regression Testing After Prompt Changes: Steps](https://en.aobaworks.com/claude-code-regression-testing-after-prompt-changes-steps/): Claude Code regression testing after prompt changes: capture a baseline, grade both versions, and set a flaky-run threshold before you trust a CLAUDE.md edit.
 - [AI Agent Evaluation Metrics: Pass Rate Across Repeat Runs](https://en.aobaworks.com/ai-agent-evaluation-metrics-pass-rate-across-repeat-runs/): AI agent evaluation metrics for Claude Code: compute pass@k, pass^k, variance across N reruns and judge-score drift to catch flaky or silently wrong runs.
 - [CLAUDE.md Best Practices: A Template for Unattended Agents](https://en.aobaworks.com/claude-md-best-practices-a-template-for-unattended-agents/): CLAUDE.md best practices for headless and scheduled Claude Code runs: a ready template, the --bare trap, and rules that stop overnight agents stalling.
 - [AI Agent Evaluation Framework: Claude Code Eval Loop Steps](https://en.aobaworks.com/ai-agent-evaluation-framework-claude-code-eval-loop-steps/): An AI agent evaluation framework for Claude Code: write tasks and graders, run each several times, and track pass rate and pass^k. Includes a harness.
