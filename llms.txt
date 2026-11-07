@@ -5,6 +5,7 @@
 Guides are researched from official sources, cite them, and are reviewed regularly.
 
 ## Guides
+- [Claude Code Hooks Not Working: 8 Fixes and a Debug Script](https://en.aobaworks.com/claude-code-hooks-not-working-8-fixes-and-a-debug-script/): Claude Code hooks not working? Fix settings location, JSON, matchers, exit codes, permissions and claude -p, then log every payload with a debug script.
 - [Claude Code PreToolUse Hook: Copy-Paste Block Scripts](https://en.aobaworks.com/claude-code-pretooluse-hook-copy-paste-block-scripts/): Claude Code PreToolUse hook guide: exact JSON input, allow/deny/ask output, exit codes, error fixes, copy-paste scripts that block risky headless runs.
 - [Claude Code GitHub Actions Permissions: Least-Privilege YAML](https://en.aobaworks.com/claude-code-github-actions-permissions-least-privilege-yaml/): Claude Code GitHub Actions permissions explained: exact permissions blocks, claude_args tool limits and secret setup for unattended PR review and cron runs.
 - [Claude Code Stop Hook: Block Early Exit Without Loops](https://en.aobaworks.com/claude-code-stop-hook-block-early-exit-without-loops/): Claude Code stop hook guide: block early exit until tests pass, cap retries with stop_hook_active and a counter, and fix JSON validation errors.
